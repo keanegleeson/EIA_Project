@@ -21,7 +21,13 @@
     <!-- chart.js import -->
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
 
+
+
+    <!-- Custom Scripts -->
+    <script src="js/EIA_datasets.js"></script>
     <script src="js/eia.js"></script>
 
 </head>
@@ -31,7 +37,7 @@
 <body id="home" data-spy="scroll" data-target=".navbar" data-offset="100">
     <header class="main-header" id="main-header">
         <!-- navbar -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
                 <a class="navbar-brand order-1 mr-0" target="_blank"></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
@@ -53,48 +59,36 @@
     </header>
 
     <div class="container pt-4">
+        <!-- dropdown menu -->
+        <div class="row">
+            <div class="col-md-6 col-xl-3 mb-4">
+                <div class="dropdown">
+                    <button class="dropbtn">Select a Time Unit</button>
+                    <div class="dropdown-content">
+                        <!-- might want to use this: https://css-tricks.com/dynamic-dropdowns/ -->
+                        <select id="time">
+                            <option value="Hourly">Hourly</option>
+                            <option Value="Monthly">Monthly</option>
+                            <option value="Annual">Annual</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="EIA" class="row">
             <div class="col-lg">
                 <h1>Demand for California</h1>
                 <canvas id="chart" width="400" height="400" padding-bottom="100"></canvas>
-                <script>
-
-
-                    chartIt();
-
-                    async function chartIt() {
-                        const ctx = document.getElementById('chart').getContext('2d');
-                        const data = await getEIA();
-                        
-
-                        const myChart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: data.xlabels,
-                                datasets: [{
-                                    label: 'Net Interchange (MWh)',
-                                    data: data.yValues,
-                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                    borderColor: 'rgba(255, 99, 132, 1)',
-                                    borderWidth: 1,
-                                    fill: false
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    yAxes: [{
-                                        ticks: {
-                                            beginAtZero: true
-                                        }
-                                    }]
-                                }
-                            }
-                        });
-                    }
-                </script>
+                <script src="js/chartIt.js"></script>
             </div>
         </div>
-    </div><!-- /.container -->
+        <!-- End of chart -->
+
+    </div>
+    <!-- /.container -->
+    <!-- start dataset filter -->
+
 
 
 
@@ -111,7 +105,7 @@
         crossorigin="anonymous"></script>
 
     <!--Custom scripts-->
-   
+
     <!-- <div class="push"></div> -->
     <footer class="footer">
         <div class="container">
