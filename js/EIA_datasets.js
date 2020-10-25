@@ -25,6 +25,7 @@ const getCategories = async () => {
         }
         
     }
+    
     // console.log(category_ids);
     // console.log(catLen);
     return {category_ids , category_names};
@@ -39,19 +40,39 @@ const getCategories = async () => {
 
 
 
-const getChildSeries = async () => {
+const getChildCatURLs = async () => {
     const regionCategories = await getCategories();
     // console.log(regionCategories);
     const ids = regionCategories.category_ids;
-    const seriesUrls = [];
+    const region = regionCategories.category_names;
+
+    const childCatUrls = [];
     ids.forEach(i => {
-        const childSeriesUrl = `https://api.eia.gov/category/?api_key=${key}&category_id=${i}`;
+        childCatUrls.push(`https://api.eia.gov/category/?api_key=${key}&category_id=${i}`);
         // console.log(childSeriesUrl);
-        const catResponse = await fetch(childSeriesUrl);
-        const catApiData = await catResponse.json();
-        console.log(catApiData);
+        // const catResponse = fetch(childSeriesUrl);
+        // const catApiData = catResponse.json();
+        // console.log(catApiData);
     });
+    return{childCatUrls,region};
     // const childSeriesUrl = `https://api.eia.gov/category/?api_key=${key}&category_id=${i}`;
 }
 
-getChildSeries();
+const getSeriesURLs = async () => {
+    const catURLS = await getChildCatURLs();
+    const childURLS = catURLS.childCatUrls;
+    const region = catURLS.region;
+    // console.log(childURLS);
+    const seriesURLS = [];
+    for (const url of childURLS) {
+        const response = await fetch(url);
+        const api_data = await response.json();
+        // console.log(api_data);
+        const childseries = api_data.category.childseries[0].series_id;
+        // console.log(childseries);
+        seriesURLS.push(`http://api.eia.gov/series/?api_key=${api_key}&series_id=${childseries}`);
+    }
+    // console.log(seriesURLS,region);
+    return {seriesURLS,region}
+}
+getSeriesURLs();

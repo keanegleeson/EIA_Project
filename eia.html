@@ -3,6 +3,8 @@
 
 <head>
     <title>Keane Gleeson</title>
+
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,15 +22,31 @@
 
     <!-- chart.js import -->
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
 
 
 
     <!-- Custom Scripts -->
     <script src="js/EIA_datasets.js"></script>
     <script src="js/eia.js"></script>
+    <script>
+        // this script populates the regions dropdown (I should probably get even more clever with this and have it scrape the region names at the url and populate it that way) code to scrape region names from the console is somewhere in the eia.js file
+        window.onload = function () {
+        const regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
+        var select = document.getElementById("region");
+        var options= [];
+        var option = document.createElement('option');
+
+        regions.forEach(i => {
+            option.text = option.value = i;
+            options.push(option.outerHTML);
+        });
+        select.insertAdjacentHTML('beforeEnd', options.join('\n'));
+    }
+    </script>
 
 </head>
 
@@ -70,6 +88,29 @@
                             <option value="Hourly">Hourly</option>
                             <option Value="Monthly">Monthly</option>
                             <option value="Annual">Annual</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-10 col-m-3 mb-4">
+                <div class="dropdown">
+                    <button class="dropbtn">Select a Region</button>
+                    <div class="dropdown-content">
+                        <!-- might want to use this: https://css-tricks.com/dynamic-dropdowns/ -->
+                        <select id="region">
+                            <!-- <script>
+                                const regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
+                                var select = document.getElementById("region");
+                                var options= [];
+                                var option = document.createElement('option');
+
+                                regions.forEach(i => {
+                                    option.tezt = option.value = i;
+                                    options.push(option.outerHTML);
+                                });
+                                select.insertAdjacentHTML('beforeEnd', options.join('\n'));
+                            </script> -->
                         </select>
                     </div>
                 </div>
