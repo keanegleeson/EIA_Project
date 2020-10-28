@@ -30,23 +30,63 @@
 
 
     <!-- Custom Scripts -->
-    <script src="js/EIA_datasets.js"></script>
+    <!-- Time scale dropdown script -->
+    <script>
+        function val() {
+            var time = document.getElementById("time");
+            var timeValue = time.value;
+            console.log(timeValue);
+        }
+    </script>
+
+    <!-- Region dropdown script -->
+
+    
+    <!-- <script src="js/EIA_datasets.js"></script> -->
+    
+    <script>
+        function getRegion () {
+            var region = document.getElementById("region");
+            var regionValue = region.value;
+            console.log(regionValue);
+            return regionValue;
+            // const chart = await chartIt();
+        }
+        function handleOnChange () {
+            getRegion ();
+            chartIt();
+        }
+
+    </script>
     <script src="js/eia.js"></script>
+    <script src="js/chartIt.js"></script>
     <script>
         // this script populates the regions dropdown (I should probably get even more clever with this and have it scrape the region names at the url and populate it that way) code to scrape region names from the console is somewhere in the eia.js file
         window.onload = function () {
-        const regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
-        var select = document.getElementById("region");
-        var options= [];
-        var option = document.createElement('option');
+            const regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
+            //just pasting urls here for now, might make a function pass through to generate this array, but I'm worried it'll slow down my app
+            const urls = ["http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAL-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAR-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CENT-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.FLA-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.MIDA-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.MIDW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NE-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NY-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.SE-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.SW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.TEN-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.TEX-ALL.D.H"];
+            var select = document.getElementById("region");
+            var options = [];
+            var option = document.createElement('option');
+            chartIt();
+            const datasets = urls?.length;
+            // console.log(datasets);
+            for (i = 0; i < datasets; i++) {
+                // option.text = option.value = i;
+                option.text = regions[i];
+                option.value = urls[i];
+                options.push(option.outerHTML);
+            };
+            // urls.forEach(j => {
+            //     option.value = j;
+            //     options.push(option.outerHTML);
+            // });
+            select.insertAdjacentHTML('beforeEnd', options.join('\n'));
 
-        regions.forEach(i => {
-            option.text = option.value = i;
-            options.push(option.outerHTML);
-        });
-        select.insertAdjacentHTML('beforeEnd', options.join('\n'));
-    }
+        }
     </script>
+
 
 </head>
 
@@ -77,40 +117,30 @@
     </header>
 
     <div class="container pt-4">
-        <!-- dropdown menu -->
+        <!-- dropdown menus -->
         <div class="row">
+            <!-- time unit dropdown -->
             <div class="col-md-6 col-xl-3 mb-4">
                 <div class="dropdown">
                     <button class="dropbtn">Select a Time Unit</button>
                     <div class="dropdown-content">
                         <!-- might want to use this: https://css-tricks.com/dynamic-dropdowns/ -->
-                        <select id="time">
+                        <select onchange="val()" id="time">
                             <option value="Hourly">Hourly</option>
-                            <option Value="Monthly">Monthly</option>
+                            <option value="Monthly">Monthly</option>
                             <option value="Annual">Annual</option>
                         </select>
                     </div>
                 </div>
             </div>
-
+<!-- Region Dropdown -->
             <div class="col-md-10 col-m-3 mb-4">
                 <div class="dropdown">
                     <button class="dropbtn">Select a Region</button>
                     <div class="dropdown-content">
                         <!-- might want to use this: https://css-tricks.com/dynamic-dropdowns/ -->
-                        <select id="region">
-                            <!-- <script>
-                                const regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
-                                var select = document.getElementById("region");
-                                var options= [];
-                                var option = document.createElement('option');
-
-                                regions.forEach(i => {
-                                    option.tezt = option.value = i;
-                                    options.push(option.outerHTML);
-                                });
-                                select.insertAdjacentHTML('beforeEnd', options.join('\n'));
-                            </script> -->
+                        <select onchange="handleOnChange()" id="region">
+                            <!-- script in head populates this dropdown -->
                         </select>
                     </div>
                 </div>
@@ -121,7 +151,7 @@
             <div class="col-lg">
                 <h1>Demand for California</h1>
                 <canvas id="chart" width="400" height="400" padding-bottom="100"></canvas>
-                <script src="js/chartIt.js"></script>
+                <!-- <script src="js/chartIt.js"></script> -->
             </div>
         </div>
         <!-- End of chart -->
@@ -146,6 +176,7 @@
         crossorigin="anonymous"></script>
 
     <!--Custom scripts-->
+    
 
     <!-- <div class="push"></div> -->
     <footer class="footer">
@@ -165,6 +196,9 @@
             </div>
         </div>
     </footer>
+    <script>
+         var region = document.getElementById("region");
+    </script>
 </body>
 
 </html>

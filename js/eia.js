@@ -67,7 +67,11 @@ const api_key = '9efbf856649057f0dc4c8269b27d938c';
 
 
 
-const url = `http://api.eia.gov/series/?api_key=${api_key}&series_id=EBA.CAL-ALL.D.H`;
+// let url = `http://api.eia.gov/series/?api_key=${api_key}&series_id=EBA.CAL-ALL.D.H`;
+// const url = getRegion();
+// var time = document.getElementById("time");
+// var timeValue = time.value;
+// console.log(timeValue);
 
 // 2020 02 28 T03 Z
 // [0-4] - [5-6] - [7-8] - [10-11]
@@ -77,7 +81,8 @@ const url = `http://api.eia.gov/series/?api_key=${api_key}&series_id=EBA.CAL-ALL
 const getEIA = async () => {
     const xlabelsTemp = [];
     const yValues = [];
-
+    const url = await getRegion();
+    console.log(url);
     const response = await fetch(url);
     const api_data = await response.json();
     const series = api_data.series[0].data;
@@ -102,16 +107,11 @@ const getEIA = async () => {
     }
     const xlabels = xlabelsTemp.reverse();
     // console.log(xlabels, yValues);
+    // var chart = chartIt();
     return { xlabels, yValues };
-
+    // var chart = chartIt();
 
 }
 
 // getEIA();
 
-//This is code for the time unit toggle, might want to hoist to the top and define the time unit selected first
-var select = document.getElementById('time');
-// var input = getElementById.getElementById('');
-select.onchange = function() {
-    input.value = select.value;
-}

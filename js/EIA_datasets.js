@@ -72,7 +72,7 @@ const getSeriesURLs = async () => {
         // console.log(childseries);
         seriesURLS.push(`http://api.eia.gov/series/?api_key=${api_key}&series_id=${childseries}`);
     }
-    // console.log(seriesURLS,region);
+    console.log({seriesURLS,region});
     return {seriesURLS,region}
 }
 getSeriesURLs();
