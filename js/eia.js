@@ -1,87 +1,24 @@
-// LG&E url - http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.EEI-LGEE.ID.H
-
-//California day ahead - http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAL-ALL.D.H
-
-//Get all regions' data and add either a dropdown add option to the chart or a dropdown that generates one chart for the regions
-
-//URL for datasets - http://api.eia.gov/category/?api_key=9efbf856649057f0dc4c8269b27d938c&category_id=2122628
-//http://api.eia.gov/category/?api_key=${api_key}&category_id=2122628
-
-//URL brings you to all  categories - will want to narrow by the arrray of region names
-//Each region category has series listed for Hourly UTC and hourly Local (we'll use UTC, should be first series ID available for all)
-
-
-/*Got the list of regions using this code
-function getElementByXpath(path) {
-return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+// this script populates the regions dropdown (I should probably get even more clever with this and have it scrape the region names at the url and populate it that way) code to scrape region names from the console is somewhere in the eia.js file
+function getRegion () {
+    var region = document.getElementById("region");
+    var regionValue = region.value;
+    var regionText = region.textContent;
+    console.log(regionText);
+    console.log(regionValue);
+    return regionValue;
+    // const chart = await chartIt();
 }
-
-console.log( getElementByXpath("/html/body/div[1]/div/section/div/div/div[3]/div[1]/ul/li[2]/ul") );
-
-var c = getElementByXpath("/html/body/div[1]/div/section/div/div/div[3]/div[1]/ul/li[2]/ul").children;
-
-var list = [];
-
-var i;
-
-for (i = 0; i < c.length; i++) {
-list.push(c[i].textContent);
+function getTimeUnit() {
+    var time = document.getElementById("time");
+    var timeValue = time.value;
+    console.log(timeValue);
+    return timeValue;
 }
-console.log(list);
-
-["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"]
-*/
-
-
-//Turning this array of regions into an object
-// const regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
-
-//defining function to convert array into object - may not be neccessary?
-// var listOfObjects = [];
-// var regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
-// regions.forEach(function(entry) {
-//     var singleObj = {}
-//    // singleObj['type'] = 'name';
-//     singleObj['name'] = entry;
-//     listOfObjects.push(singleObj);
-// });
-
-// console.log(listOfObjects);
-
-
-const api_key = '9efbf856649057f0dc4c8269b27d938c';
-
-// const url = `http://api.eia.gov/series/?api_key=${api_key}&series_id=EBA.EEI-LGEE.ID.H`; -> LG&E url used in first run (not being used in next iteration as we are searching by region)
-
-
-// const categoryUrl = `https://api.eia.gov/category/?api_key=${api_key}&category_id=2122628`;
-
-
-// const getCategories = async () => {
-//     const response = await fetch(categoryUrl);
-//     const categoryJSON = await response.json();
-//     const childcategories = api_data.category[0].childcategories;
-//     console.log(childcategories);
-  
-//   }
-
-
-
-// let url = `http://api.eia.gov/series/?api_key=${api_key}&series_id=EBA.CAL-ALL.D.H`;
-// const url = getRegion();
-// var time = document.getElementById("time");
-// var timeValue = time.value;
-// console.log(timeValue);
-
-// 2020 02 28 T03 Z
-// [0-4] - [5-6] - [7-8] - [10-11]
-
-// console.log(url);
-
-const getEIA = async () => {
+let getEIA = async () => {
     const xlabelsTemp = [];
     const yValues = [];
     const url = await getRegion();
+    const timeUnit = await getTimeUnit();
     console.log(url);
     const response = await fetch(url);
     const api_data = await response.json();
@@ -104,6 +41,10 @@ const getEIA = async () => {
         xlabelsTemp.push(formattedDate);
         yValues.push(series[i][1]);
 
+        //if timeUnit = annual
+            //push yvalues
+            //xlabelsTemp.push(year)
+
     }
     const xlabels = xlabelsTemp.reverse();
     // console.log(xlabels, yValues);
@@ -113,5 +54,84 @@ const getEIA = async () => {
 
 }
 
-// getEIA();
+async function chartIt() {
+    const ctx = document.getElementById('chart').getContext('2d');
+    const data = await getEIA();
 
+
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.xlabels,
+            datasets: [{
+                label: 'Net Interchange (MWh)',
+                data: data.yValues,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+
+        },
+        //plugins for zoom feature not working right now 10.25
+        plugins: {
+            zoom: {
+                // Container for pan options
+                pan: {
+                    // Boolean to enable panning
+                    enabled: true,
+
+                    // Panning directions. Remove the appropriate direction to disable
+                    // Eg. 'y' would only allow panning in the y direction
+                    mode: "xy"
+                },
+
+                // Container for zoom options
+                zoom: {
+                    // Boolean to enable zooming
+                    enabled: true,
+
+                    // Zooming directions. Remove the appropriate direction to disable
+                    // Eg. 'y' would only allow zooming in the y direction
+                    mode: "xy"
+                }
+            }
+        }
+    });
+}
+
+//everything above might be deleted, trying to see how this works if everythin is in the same js file
+window.onload = function () {
+            const regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
+            //just pasting urls here for now, might make a function pass through to generate this array, but I'm worried it'll slow down my app
+            const urls = ["http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAL-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAR-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CENT-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.FLA-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.MIDA-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.MIDW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NE-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NY-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.SE-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.SW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.TEN-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.TEX-ALL.D.H"];
+            var select = document.getElementById("region");
+            var options = [];
+            var option = document.createElement('option');
+            chartIt();
+            const datasets = urls?.length;
+            // console.log(datasets);
+            for (i = 0; i < datasets; i++) {
+                // option.text = option.value = i;
+                option.text = regions[i];
+                option.value = urls[i];
+                options.push(option.outerHTML);
+            };
+            select.insertAdjacentHTML('beforeEnd', options.join('\n'));
+            chartIt();
+        }
+
+        function handleOnChange () {
+            // getRegion ();
+            chartIt();
+        }   
+        

@@ -31,20 +31,20 @@
 
     <!-- Custom Scripts -->
     <!-- Time scale dropdown script -->
-    <script>
+    <!-- <script>
         function val() {
             var time = document.getElementById("time");
             var timeValue = time.value;
             console.log(timeValue);
         }
-    </script>
+    </script> -->
 
     <!-- Region dropdown script -->
 
     
     <!-- <script src="js/EIA_datasets.js"></script> -->
     
-    <script>
+    <!-- <script>
         function getRegion () {
             var region = document.getElementById("region");
             var regionValue = region.value;
@@ -53,40 +53,15 @@
             // const chart = await chartIt();
         }
         function handleOnChange () {
-            getRegion ();
+            // getRegion ();
             chartIt();
         }
 
     </script>
     <script src="js/eia.js"></script>
-    <script src="js/chartIt.js"></script>
-    <script>
-        // this script populates the regions dropdown (I should probably get even more clever with this and have it scrape the region names at the url and populate it that way) code to scrape region names from the console is somewhere in the eia.js file
-        window.onload = function () {
-            const regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
-            //just pasting urls here for now, might make a function pass through to generate this array, but I'm worried it'll slow down my app
-            const urls = ["http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAL-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAR-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CENT-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.FLA-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.MIDA-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.MIDW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NE-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NY-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.SE-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.SW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.TEN-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.TEX-ALL.D.H"];
-            var select = document.getElementById("region");
-            var options = [];
-            var option = document.createElement('option');
-            chartIt();
-            const datasets = urls?.length;
-            // console.log(datasets);
-            for (i = 0; i < datasets; i++) {
-                // option.text = option.value = i;
-                option.text = regions[i];
-                option.value = urls[i];
-                options.push(option.outerHTML);
-            };
-            // urls.forEach(j => {
-            //     option.value = j;
-            //     options.push(option.outerHTML);
-            // });
-            select.insertAdjacentHTML('beforeEnd', options.join('\n'));
-
-        }
-    </script>
-
+    <script src="js/chartIt.js"></script> -->
+    <!-- <script src="js/populateRegions.js"></script> -->
+    <script src="js/eia.js"></script>
 
 </head>
 
@@ -125,7 +100,7 @@
                     <button class="dropbtn">Select a Time Unit</button>
                     <div class="dropdown-content">
                         <!-- might want to use this: https://css-tricks.com/dynamic-dropdowns/ -->
-                        <select onchange="val()" id="time">
+                        <select onchange="getTimeUnit()" id="time">
                             <option value="Hourly">Hourly</option>
                             <option value="Monthly">Monthly</option>
                             <option value="Annual">Annual</option>
