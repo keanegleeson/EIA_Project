@@ -1,22 +1,27 @@
 // this script populates the regions dropdown (I should probably get even more clever with this and have it scrape the region names at the url and populate it that way) code to scrape region names from the console is somewhere in the eia.js file
-function getRegion () {
-    var region = document.getElementById("region");
-    var regionValue = region.value;
-    var regionText = region.textContent;
-    console.log(regionText);
-    console.log(regionValue);
-    return regionValue;
-    // const chart = await chartIt();
-}
 function getTimeUnit() {
     var time = document.getElementById("time");
     var timeValue = time.value;
     console.log(timeValue);
     return timeValue;
 }
+
+function getRegion() {
+    var region = document.getElementById("region");
+    var regionValue = region.value;
+    var regionText = region.options[region.selectedIndex].text;
+    var timeText = getTimeUnit();
+    // console.log(regionText);
+    // console.log(regionValue);
+    var h1String = document.getElementsByTagName("h1")[0];
+    h1String.innerHTML = `${regionText.slice(0, -5)} Generation (MWh) - ${timeText}`;
+    return regionValue;
+    // const chart = await chartIt();
+}
+
 let getEIA = async () => {
     const xlabelsTemp = [];
-    const yValues = [];
+    const yValuesTemp = [];
     const url = await getRegion();
     const timeUnit = await getTimeUnit();
     console.log(url);
@@ -38,16 +43,102 @@ let getEIA = async () => {
         const formattedDate = year.concat('-', month, '-', day, ' ', hour, ':00');
         // console.log(formattedDate);
         // xlabels.push(series[i][0]);
-        xlabelsTemp.push(formattedDate);
-        yValues.push(series[i][1]);
+        // xlabelsTemp.push(formattedDate);
+        // yValues.push(series[i][1]);
 
-        //if timeUnit = annual
-            //push yvalues
-            //xlabelsTemp.push(year)
+        if (timeUnit === 'Annual') {
+            yValuesTemp.push(series[i][1]);
+            xlabelsTemp.push(year);
+        } else if (timeUnit === 'Monthly') {
+            yValuesTemp.push(series[i][1]);
+            xlabelsTemp.push(year.concat('-', month));
+        } else {
+            xlabelsTemp.push(formattedDate);
+            yValuesTemp.push(series[i][1]);
+        }
+
+        //push yvalues
+        //xlabelsTemp.push(year)
 
     }
-    const xlabels = xlabelsTemp.reverse();
+
+
+    var object = {};
+
+    const xlabelsTemp2 = xlabelsTemp.reverse();
+    const yValuesTemp2 = yValuesTemp.reverse();
+    object.date = xlabelsTemp2;
+    object.value = yValuesTemp2;
+
+    console.log(object);
+
+    //Setting object with array of unique dates
+    const condensedObject = {};
+    condensedObject.date = [... new Set(object.date)];
+    condensedObject.value = [];
+    // console.log(condensedObject);
+
+    //counts gets the number of observations for each yea
+    //x is the key (counts[x] is value)
+    var counts = {};
+    object.date.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+
+    console.log(counts);
+
+
+    // console.log(object.value.splice(0,counts["2015"]));
+
+    const sumValues = (accumulator, currentValue) => accumulator + currentValue;
+
+    //test sum - COMMENT OUT WHEN RUNNING LOOP BELOW
+    // const testSum = object.value.splice(0,counts["2016"]).reduce(sumValues);
+
+    // console.log(testSum);
+
+    //get all values from counts
+        //do sumValues and splice operation
+        //add to condensedObject.values
+
+    
+    // console.log(object.value.length);
+
+    for (const [key, value] of Object.entries(counts)) {
+        //
+        const aggr = object.value.splice(0,value).reduce(sumValues);
+        // console.log(aggr);
+        condensedObject.value.push(aggr);
+    }
+
+    // console.log(condensedObject.date,condensedObject.value);
+
+    let xlabels = condensedObject.date;
+    let yValues = condensedObject.value;
+    // console.log(testSum);
+
+
+    //get first n out of yValues and sum
+        //e.g. pull 4000 for 2015 and sum as first value 
+
+    
+
+
+    //get object of arrays
+
+    //slice out distinct number
+
+    //reduce
+
+
+
+
+
+
+
+    // const sumValues = (object) => {
+    //     const summed = object.reduce(acc, current)
+    // }
     // console.log(xlabels, yValues);
+    // console.log(object);
     // var chart = chartIt();
     return { xlabels, yValues };
     // var chart = chartIt();
@@ -111,27 +202,26 @@ async function chartIt() {
 
 //everything above might be deleted, trying to see how this works if everythin is in the same js file
 window.onload = function () {
-            const regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
-            //just pasting urls here for now, might make a function pass through to generate this array, but I'm worried it'll slow down my app
-            const urls = ["http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAL-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAR-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CENT-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.FLA-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.MIDA-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.MIDW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NE-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NY-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.SE-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.SW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.TEN-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.TEX-ALL.D.H"];
-            var select = document.getElementById("region");
-            var options = [];
-            var option = document.createElement('option');
-            chartIt();
-            const datasets = urls?.length;
-            // console.log(datasets);
-            for (i = 0; i < datasets; i++) {
-                // option.text = option.value = i;
-                option.text = regions[i];
-                option.value = urls[i];
-                options.push(option.outerHTML);
-            };
-            select.insertAdjacentHTML('beforeEnd', options.join('\n'));
-            chartIt();
-        }
+    const regions = ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
+    //just pasting urls here for now, might make a function pass through to generate this array, but I'm worried it'll slow down my app
+    const urls = ["http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAL-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CAR-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.CENT-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.FLA-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.MIDA-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.MIDW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NE-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NY-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.NW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.SE-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.SW-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.TEN-ALL.D.H", "http://api.eia.gov/series/?api_key=9efbf856649057f0dc4c8269b27d938c&series_id=EBA.TEX-ALL.D.H"];
+    var select = document.getElementById("region");
+    var options = [];
+    var option = document.createElement('option');
+    // chartIt();
+    const datasets = urls?.length;
+    // console.log(datasets);
+    for (i = 0; i < datasets; i++) {
+        // option.text = option.value = i;
+        option.text = regions[i];
+        option.value = urls[i];
+        options.push(option.outerHTML);
+    };
+    select.insertAdjacentHTML('beforeEnd', options.join('\n'));
+    chartIt();
+}
 
-        function handleOnChange () {
-            // getRegion ();
-            chartIt();
-        }   
-        
+function handleOnChange() {
+    // getRegion ();
+    chartIt();
+}

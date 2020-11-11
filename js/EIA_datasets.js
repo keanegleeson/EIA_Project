@@ -1,4 +1,4 @@
-
+//This script is used to set up the app. It is not really needed in the html or any of the other js files. Run this script again to get updated series urls for the regions or whatever dataset 
 const key = '9efbf856649057f0dc4c8269b27d938c';
 const categoryUrl = `https://api.eia.gov/category/?api_key=${key}&category_id=2122628`;
 const regions =  ["California (CAL)", "Carolinas (CAR)", "Central (CENT)", "Florida (FLA)", "Mid-Atlantic (MIDA)", "Midwest (MIDW)", "New England (NE)", "New York (NY)", "Northwest (NW)", "Southeast (SE)", "Southwest (SW)", "Tennessee (TEN)", "Texas (TEX)"];
@@ -76,3 +76,37 @@ const getSeriesURLs = async () => {
     return {seriesURLS,region}
 }
 getSeriesURLs();
+
+
+const sumTransactions = (transactions) => {
+
+    const summed = transactions.reduce((acc, current) => {
+      // Get the current date object
+      const date = new Date(current.date);
+      // Create your key/identifier
+      const key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+      // Retreive the previous price from the accumulator
+      const previousPrice = acc[key]; // Might also return undefined
+      // Create your temp current price value, and be sure to deal with numbers.
+      let currentPrice = Number(current.price);
+      // If you had a previous value (and not undefined)
+      if (previousPrice) {
+        // Add it to our value
+        currentPrice += Number(previousPrice);
+      }
+      // Return the future accumulator value
+      return Object.assign(acc, {
+        [key]: currentPrice, // new values will overwrite same old values
+      })
+    }, {})
+  
+    // Once we have all values, get the dates, and sort them (default: earlier first)
+    // Return an array of each value from the summed object to our sortedArray
+    const sortedArray = Object.keys(summed).sort().map((val) => {
+      return summed[val];
+    });
+  
+    console.log("sortedArray", sortedArray);
+  };
+  
+  sumTransactions(transactions);
