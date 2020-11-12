@@ -83,7 +83,7 @@ let getEIA = async () => {
     var counts = {};
     object.date.forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
 
-    console.log(counts);
+    // console.log(counts);
 
 
     // console.log(object.value.splice(0,counts["2015"]));
