@@ -16,7 +16,6 @@ function getRegion() {
     var h1String = document.getElementsByTagName("h1")[0];
     h1String.innerHTML = `${regionText.slice(0, -5)} Generation (MWh) - ${timeText}`;
     return regionValue;
-    // const chart = await chartIt();
 }
 
 let getEIA = async () => {
@@ -57,20 +56,25 @@ let getEIA = async () => {
             yValuesTemp.push(series[i][1]);
         }
 
-        //push yvalues
-        //xlabelsTemp.push(year)
-
     }
-
-
-    var object = {};
-
+    // Arrays were sorted in order of newest observations to oldest, for the purpose of the chart, I want to reverse and show time progressing left to right
     const xlabelsTemp2 = xlabelsTemp.reverse();
     const yValuesTemp2 = yValuesTemp.reverse();
+
+    var object = {};
     object.date = xlabelsTemp2;
     object.value = yValuesTemp2;
 
-    console.log(object);
+    // console.log(object);
+
+    //The code from here to ~ line 112 aggrtegates the data into monthly and annual values 
+
+    //get object of arrays
+
+    //slice out distinct number
+
+    //reduce
+
 
     //Setting object with array of unique dates
     const condensedObject = {};
@@ -103,7 +107,6 @@ let getEIA = async () => {
     // console.log(object.value.length);
 
     for (const [key, value] of Object.entries(counts)) {
-        //
         const aggr = object.value.splice(0,value).reduce(sumValues);
         // console.log(aggr);
         condensedObject.value.push(aggr);
@@ -122,26 +125,13 @@ let getEIA = async () => {
     
 
 
-    //get object of arrays
-
-    //slice out distinct number
-
-    //reduce
 
 
 
 
-
-
-
-    // const sumValues = (object) => {
-    //     const summed = object.reduce(acc, current)
-    // }
     // console.log(xlabels, yValues);
     // console.log(object);
-    // var chart = chartIt();
     return { xlabels, yValues };
-    // var chart = chartIt();
 
 }
 
@@ -222,6 +212,5 @@ window.onload = function () {
 }
 
 function handleOnChange() {
-    // getRegion ();
     chartIt();
 }

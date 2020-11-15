@@ -26,43 +26,13 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
+    <!-- hammerjs is not working currently for some reason :( -->
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
 
 
 
-    <!-- Custom Scripts -->
-    <!-- Time scale dropdown script -->
-    <!-- <script>
-        function val() {
-            var time = document.getElementById("time");
-            var timeValue = time.value;
-            console.log(timeValue);
-        }
-    </script> -->
-
-    <!-- Region dropdown script -->
-
     
-    <!-- <script src="js/EIA_datasets.js"></script> -->
-    
-    <!-- <script>
-        function getRegion () {
-            var region = document.getElementById("region");
-            var regionValue = region.value;
-            console.log(regionValue);
-            return regionValue;
-            // const chart = await chartIt();
-        }
-        function handleOnChange () {
-            // getRegion ();
-            chartIt();
-        }
-
-    </script>
-    <script src="js/eia.js"></script>
-    <script src="js/chartIt.js"></script> -->
-    <!-- <script src="js/populateRegions.js"></script> -->
     <script src="js/eia.js"></script>
 
 </head>
@@ -101,7 +71,7 @@
                 <div class="dropdown">
                     <button class="dropbtn">Select a Time Unit</button>
                     <div class="dropdown-content">
-                        <!-- might want to use this: https://css-tricks.com/dynamic-dropdowns/ -->
+                        
                         <select onchange="handleOnChange()" id="time">
                             <option value="Hourly">Hourly</option>
                             <option value="Monthly">Monthly</option>
@@ -115,7 +85,6 @@
                 <div class="dropdown">
                     <button class="dropbtn">Select a Region</button>
                     <div class="dropdown-content">
-                        <!-- might want to use this: https://css-tricks.com/dynamic-dropdowns/ -->
                         <select onchange="handleOnChange()" id="region">
                             <!-- script in head populates this dropdown -->
                         </select>
@@ -128,7 +97,6 @@
             <div class="col-lg">
                 <h1>Demand for California</h1>
                 <canvas id="chart" width="400" height="400" padding-bottom="100"></canvas>
-                <!-- <script src="js/chartIt.js"></script> -->
             </div>
         </div>
         <!-- End of chart -->
