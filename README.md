@@ -11,4 +11,5 @@ Requirement | Feature
 Read and parse an external file (such as JSON or CSV) into your application and display some data from that in your app | JSON data retreived using fetch api and shown in a chart
 Retrieve data from an external API and display data in your app (such as with fetch() or with AJAX) | Data retreived from EIA's api
 Visualize data in a graph, chart, or other visual representation of data | Chart.js used to visualize data in a line chart
+Build a conversion tool that converts user input to another type and displays it (ex: converts cups to grams) | User can change between hourly, monthly, and annual views of the data
 
