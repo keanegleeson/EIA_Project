@@ -13,3 +13,10 @@ Retrieve data from an external API and display data in your app (such as with fe
 Visualize data in a graph, chart, or other visual representation of data | Chart.js used to visualize data in a line chart
 Build a conversion tool that converts user input to another type and displays it (ex: converts cups to grams) | User can change between hourly, monthly, and annual views of the data
 
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
